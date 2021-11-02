@@ -7,15 +7,19 @@ namespace WebApplication51
 {
     public static class WC
     {
-        public static string ImagePath = @"\images\product\";
-
-        public static string SessionCart = "ShoppingCartSession";
+        public const string ImagePath = @"\images\product\";
 
 
-        public static string AdminRole = "Admin";
+        public const string SessionCart = "ShoppingCartSession";
 
-        public static string CustomerRole = "Customer";
+        public const string adminRole = "Admin";
 
-        public static string EmailAdmin = "Sakshamkc10@gmail.com";
+
+        public const string customerRole = "Customer";
+
+
+
+        public const string EmailAdmin = "Sakshamkc10@gmail.com";
+
     }
 }

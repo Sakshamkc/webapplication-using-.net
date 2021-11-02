@@ -1,15 +1,14 @@
 ﻿@page
 @model RegisterModel
 
-
-            @if(User.IsInRole(WebApplication51.WC.AdminRole))
-                {
-                    <h1>Register an Admin Account</h1>
-                }
-            else
-            {
-                 <h1> Register </h1>
-            }
+@if (User.IsInRole(WebApplication51.WC.adminRole))
+{
+    <h1>Register an Admin Account</h1>
+}
+else
+{
+    <h1>Register</h1>
+}
 
 <div class="row">
     <div class="col-md-4">
@@ -42,17 +41,15 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-
-
-            @if (User.IsInRole(WebApplication51.WC.AdminRole))
+            @if (User.IsInRole(WebApplication51.WC.adminRole))
             {
                 <button type="submit" class="btn btn-warning">Register Admin User</button>
             }
             else
             {
-              <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary">Register</button>
             }
-            
+
         </form>
     </div>
     <div class="col-md-6 col-md-offset-2">

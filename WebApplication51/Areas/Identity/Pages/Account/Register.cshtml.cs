@@ -49,10 +49,6 @@ namespace WebApplication51.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            public string FullName { get; set; }
-
-            public string PhoneNumber { get; set; }
-
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -69,38 +65,47 @@ namespace WebApplication51.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-           
+            public string FullName { get; set; }
+            public string PhoneNumber { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if(!await _roleManager.RoleExistsAsync(WC.AdminRole))
+            if (!await _roleManager.RoleExistsAsync(WC.adminRole))
             {
-                await _roleManager.CreateAsync(new IdentityRole(WC.AdminRole));
-                await _roleManager.CreateAsync(new IdentityRole(WC.CustomerRole));
+                await _roleManager.CreateAsync(new IdentityRole(WC.adminRole));
+                await _roleManager.CreateAsync(new IdentityRole(WC.customerRole));
             }
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber , FullName = Input.FullName };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    PhoneNumber = Input.PhoneNumber,
+                    FullName = Input.FullName
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if(User.IsInRole(WC.AdminRole))
+                    if(User.IsInRole(WC.adminRole))
                     {
-                        await _userManager.AddToRoleAsync(user, WC.AdminRole);
+                        await _userManager.AddToRoleAsync(user, WC.adminRole);
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, WC.CustomerRole);
+                        await _userManager.AddToRoleAsync(user, WC.customerRole);
                     }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -120,7 +125,14 @@ namespace WebApplication51.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        if (!User.IsInRole(WC.adminRole))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index");
+                        }
                         return LocalRedirect(returnUrl);
                     }
                 }

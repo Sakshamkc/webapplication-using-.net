@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using WebApplication51.Models;
 
 namespace WebApplication51.Controllers
 {
+   [Authorize(Roles =WC.adminRole)]
     public class ApplicationlistController : Controller
     {
         private readonly ApplicationDbContext _db;
